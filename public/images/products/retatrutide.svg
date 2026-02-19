@@ -1,0 +1,14 @@
+<svg width="720" height="720" viewBox="0 0 720 720" xmlns="http://www.w3.org/2000/svg">
+  <rect width="720" height="720" fill="#0D1A27"/>
+  <g fill="none" stroke="#C6D58D" stroke-opacity="0.45">
+    <path d="M120 160h490"/>
+    <path d="M120 195h490"/>
+    <path d="M120 230h490"/>
+  </g>
+  <rect x="248" y="120" width="224" height="440" rx="44" fill="#19334A" stroke="#A5C7DF" stroke-opacity="0.45"/>
+  <rect x="280" y="80" width="160" height="52" rx="18" fill="#25435E"/>
+  <rect x="272" y="260" width="176" height="130" rx="16" fill="#0B1823" stroke="#C6D58D" stroke-opacity="0.65"/>
+  <text x="360" y="318" fill="#F2F6FB" text-anchor="middle" font-size="26" font-family="Arial">RETATRUTIDE</text>
+  <text x="360" y="350" fill="#A3BBD0" text-anchor="middle" font-size="18" font-family="Arial">15mg / 3mL</text>
+  <circle cx="360" cy="464" r="16" fill="#C6D58D" fill-opacity="0.9"/>
+</svg>

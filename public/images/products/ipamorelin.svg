@@ -1,0 +1,14 @@
+<svg width="720" height="720" viewBox="0 0 720 720" xmlns="http://www.w3.org/2000/svg">
+  <rect width="720" height="720" fill="#0E1A25"/>
+  <g stroke="#9FB7CC" stroke-opacity="0.35" fill="none">
+    <path d="M90 520h540"/>
+    <path d="M90 480h540"/>
+    <path d="M90 440h540"/>
+  </g>
+  <rect x="248" y="120" width="224" height="440" rx="44" fill="#1B344B" stroke="#A5C7DF" stroke-opacity="0.45"/>
+  <rect x="280" y="80" width="160" height="52" rx="18" fill="#284760"/>
+  <rect x="272" y="260" width="176" height="130" rx="16" fill="#0B1823" stroke="#C6D58D" stroke-opacity="0.6"/>
+  <text x="360" y="318" fill="#F2F6FB" text-anchor="middle" font-size="28" font-family="Arial">IPAMORELIN</text>
+  <text x="360" y="350" fill="#A3BBD0" text-anchor="middle" font-size="18" font-family="Arial">5mg / 2mL</text>
+  <circle cx="360" cy="464" r="16" fill="#C6D58D" fill-opacity="0.9"/>
+</svg>

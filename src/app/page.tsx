@@ -1,65 +1,84 @@
-import Image from "next/image";
+import Image from 'next/image';
+import Link from 'next/link';
+import HeroPeptideScroll from '@/components/HeroPeptideScroll';
+import ComplianceNote from '@/components/product/ComplianceNote';
+import { products } from '@/lib/catalog';
 
 export default function Home() {
+  const featured = products.slice(0, 3);
+
   return (
-    <div className="flex min-h-screen items-center justify-center bg-zinc-50 font-sans dark:bg-black">
-      <main className="flex min-h-screen w-full max-w-3xl flex-col items-center justify-between py-32 px-16 bg-white dark:bg-black sm:items-start">
-        <Image
-          className="dark:invert"
-          src="/next.svg"
-          alt="Next.js logo"
-          width={100}
-          height={20}
-          priority
-        />
-        <div className="flex flex-col items-center gap-6 text-center sm:items-start sm:text-left">
-          <h1 className="max-w-xs text-3xl font-semibold leading-10 tracking-tight text-black dark:text-zinc-50">
-            To get started, edit the page.tsx file.
-          </h1>
-          <p className="max-w-md text-lg leading-8 text-zinc-600 dark:text-zinc-400">
-            Looking for a starting point or more instructions? Head over to{" "}
-            <a
-              href="https://vercel.com/templates?framework=next.js&utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-              className="font-medium text-zinc-950 dark:text-zinc-50"
+    <main>
+      <HeroPeptideScroll />
+
+      <section className="section-shell py-20">
+        <div className="grid gap-6 md:grid-cols-3">
+          <div className="glass-card rounded-2xl p-6">
+            <p className="text-xs uppercase tracking-[0.2em] text-[var(--text-1)]">Assay Integrity</p>
+            <p className="mt-3 text-sm text-[var(--text-0)]">Lot-level placeholder COA references and clear concentration labels.</p>
+          </div>
+          <div className="glass-card rounded-2xl p-6">
+            <p className="text-xs uppercase tracking-[0.2em] text-[var(--text-1)]">Subscription Ops</p>
+            <p className="mt-3 text-sm text-[var(--text-0)]">Cadence-based replenishment with transparent discount logic.</p>
+          </div>
+          <div className="glass-card rounded-2xl p-6">
+            <p className="text-xs uppercase tracking-[0.2em] text-[var(--text-1)]">Volume Tracking</p>
+            <p className="mt-3 text-sm text-[var(--text-0)]">Real-time mL totals, vial counts, and order-level summaries.</p>
+          </div>
+        </div>
+      </section>
+
+      <section className="section-shell pb-20">
+        <div className="mb-8 flex items-end justify-between">
+          <div>
+            <p className="text-xs uppercase tracking-[0.18em] text-[var(--text-1)]">Featured peptides</p>
+            <h2 className="font-display text-4xl text-[var(--text-0)] md:text-5xl">Clinical-luxury catalog modules</h2>
+          </div>
+          <Link href="/catalog" className="text-sm text-[var(--accent)]">
+            View full catalog
+          </Link>
+        </div>
+
+        <div className="grid gap-6 md:grid-cols-3">
+          {featured.map((product) => (
+            <Link
+              key={product.slug}
+              href={`/product/${product.slug}`}
+              className="group overflow-hidden rounded-2xl border border-[var(--border-soft)] bg-[var(--surface)]"
             >
-              Templates
-            </a>{" "}
-            or the{" "}
-            <a
-              href="https://nextjs.org/learn?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-              className="font-medium text-zinc-950 dark:text-zinc-50"
-            >
-              Learning
-            </a>{" "}
-            center.
+              <div className="relative aspect-square overflow-hidden bg-[var(--bg-1)]">
+                <Image src={product.imagePath} alt={`${product.name} product artwork`} fill className="object-cover transition duration-300 group-hover:scale-105" />
+              </div>
+              <div className="p-5">
+                <p className="text-xs uppercase tracking-[0.18em] text-[var(--text-1)]">{product.badge}</p>
+                <h3 className="mt-2 text-xl font-semibold text-[var(--text-0)]">{product.name}</h3>
+                <p className="mt-2 text-sm text-[var(--text-1)]">{product.shortDescription}</p>
+              </div>
+            </Link>
+          ))}
+        </div>
+      </section>
+
+      <section className="section-shell pb-24">
+        <div className="rounded-3xl border border-[var(--border-soft)] bg-[var(--surface)] p-8 md:p-10">
+          <h3 className="font-display text-3xl text-[var(--text-0)]">Subscription-ready placeholder checkout</h3>
+          <p className="mt-4 max-w-2xl text-sm text-[var(--text-1)]">
+            This build demonstrates one-time and subscription purchase paths with cadence selection, volume math, and a
+            multi-step mock checkout flow.
           </p>
+          <div className="mt-6 flex flex-wrap gap-3">
+            <Link href="/catalog" className="rounded-full bg-[var(--accent)] px-5 py-3 text-sm font-semibold text-[var(--bg-0)]">
+              Start Building Cart
+            </Link>
+            <Link href="/checkout" className="rounded-full border border-[var(--border-soft)] px-5 py-3 text-sm text-[var(--text-0)]">
+              Preview Checkout
+            </Link>
+          </div>
         </div>
-        <div className="flex flex-col gap-4 text-base font-medium sm:flex-row">
-          <a
-            className="flex h-12 w-full items-center justify-center gap-2 rounded-full bg-foreground px-5 text-background transition-colors hover:bg-[#383838] dark:hover:bg-[#ccc] md:w-[158px]"
-            href="https://vercel.com/new?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            <Image
-              className="dark:invert"
-              src="/vercel.svg"
-              alt="Vercel logomark"
-              width={16}
-              height={16}
-            />
-            Deploy Now
-          </a>
-          <a
-            className="flex h-12 w-full items-center justify-center rounded-full border border-solid border-black/[.08] px-5 transition-colors hover:border-transparent hover:bg-black/[.04] dark:border-white/[.145] dark:hover:bg-[#1a1a1a] md:w-[158px]"
-            href="https://nextjs.org/docs?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            Documentation
-          </a>
+        <div className="mt-6">
+          <ComplianceNote />
         </div>
-      </main>
-    </div>
+      </section>
+    </main>
   );
 }

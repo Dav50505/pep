@@ -1,0 +1,10 @@
+<svg width="900" height="900" viewBox="0 0 900 900" xmlns="http://www.w3.org/2000/svg">
+  <defs>
+    <radialGradient id="orb" cx="0" cy="0" r="1" gradientUnits="userSpaceOnUse" gradientTransform="translate(450 450) rotate(90) scale(450)">
+      <stop offset="0" stop-color="#C6D58D" stop-opacity="0.55"/>
+      <stop offset="0.6" stop-color="#8AD6B8" stop-opacity="0.2"/>
+      <stop offset="1" stop-color="#07111A" stop-opacity="0"/>
+    </radialGradient>
+  </defs>
+  <circle cx="450" cy="450" r="450" fill="url(#orb)"/>
+</svg>
