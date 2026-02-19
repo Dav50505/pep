@@ -16,9 +16,12 @@ export default function RevealOnScroll({
   delayMs = 0,
   as: Tag = 'div',
 }: RevealOnScrollProps) {
-  const ref = useRef<HTMLElement | null>(null);
+  const ref = useRef<Element | null>(null);
   const canObserve = typeof window !== 'undefined' && typeof window.IntersectionObserver !== 'undefined';
   const [isVisible, setIsVisible] = useState(true);
+  const setRef = (node: Element | null) => {
+    ref.current = node;
+  };
 
   useEffect(() => {
     if (!canObserve) {
@@ -52,7 +55,7 @@ export default function RevealOnScroll({
 
   return (
     <Tag
-      ref={ref}
+      ref={setRef}
       className={classes}
       style={{ transitionDelay: `${delayMs}ms` }}
     >
