@@ -18,12 +18,16 @@ export default function HeroPeptideScroll() {
   const [ready, setReady] = useState(false);
   const [loadingLabel, setLoadingLabel] = useState('Loading molecular sequence…');
   const [isMobile, setIsMobile] = useState(false);
+  const [isDesktop, setIsDesktop] = useState(false);
 
   useEffect(() => {
-    const checkMobile = () => setIsMobile(window.innerWidth < 768);
-    checkMobile();
-    window.addEventListener('resize', checkMobile);
-    return () => window.removeEventListener('resize', checkMobile);
+    const checkViewport = () => {
+      setIsMobile(window.innerWidth < 768);
+      setIsDesktop(window.innerWidth >= 1024);
+    };
+    checkViewport();
+    window.addEventListener('resize', checkViewport);
+    return () => window.removeEventListener('resize', checkViewport);
   }, []);
 
   useEffect(() => {
@@ -60,6 +64,25 @@ export default function HeroPeptideScroll() {
       context.drawImage(image, x, y, image.width * scale, image.height * scale);
       activeFrameRef.current = index;
     };
+
+    if (!isDesktop) {
+      const firstFrame = new Image();
+      firstFrame.src = '/frames/frame_0001.jpg';
+      firstFrame.onload = () => {
+        framesRef.current[0] = firstFrame;
+        drawFrame(0);
+        setReady(true);
+      };
+
+      const onResize = () => drawFrame(0);
+      window.addEventListener('resize', onResize);
+      return () => {
+        window.removeEventListener('resize', onResize);
+        if (rafRef.current) {
+          cancelAnimationFrame(rafRef.current);
+        }
+      };
+    }
 
     const queueDraw = (index: number) => {
       if (rafRef.current) {
@@ -128,7 +151,7 @@ export default function HeroPeptideScroll() {
         cancelAnimationFrame(rafRef.current);
       }
     };
-  }, []);
+  }, [isDesktop]);
 
   return (
     <section ref={containerRef} className="relative h-screen w-full overflow-hidden bg-[var(--bg-0)]">
