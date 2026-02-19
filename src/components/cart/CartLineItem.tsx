@@ -43,7 +43,18 @@ export default function CartLineItem({ line }: CartLineItemProps) {
         </div>
 
         <div className="flex flex-wrap items-center gap-3">
-          <QuantityStepper value={line.quantity} onChange={(quantity) => setLineQuantity(line.lineId, quantity)} />
+          <QuantityStepper
+            value={line.quantity}
+            min={0}
+            onChange={(quantity) => {
+              if (quantity < 1) {
+                removeLine(line.lineId);
+                return;
+              }
+
+              setLineQuantity(line.lineId, quantity);
+            }}
+          />
           <select
             value={line.purchaseType}
             onChange={(event) => setLinePurchaseType(line.lineId, event.target.value as 'one_time' | 'subscription')}

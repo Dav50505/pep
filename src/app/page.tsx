@@ -1,7 +1,7 @@
-import Image from 'next/image';
 import Link from 'next/link';
 import HeroPeptideScroll from '@/components/HeroPeptideScroll';
 import ComplianceNote from '@/components/product/ComplianceNote';
+import ProductCard from '@/components/product/ProductCard';
 import { products } from '@/lib/catalog';
 
 export default function Home() {
@@ -41,20 +41,7 @@ export default function Home() {
 
         <div className="grid gap-6 md:grid-cols-3">
           {featured.map((product) => (
-            <Link
-              key={product.slug}
-              href={`/product/${product.slug}`}
-              className="group overflow-hidden rounded-2xl border border-[var(--border-soft)] bg-[var(--surface)]"
-            >
-              <div className="relative aspect-square overflow-hidden bg-[var(--bg-1)]">
-                <Image src={product.imagePath} alt={`${product.name} product artwork`} fill className="object-cover transition duration-300 group-hover:scale-105" />
-              </div>
-              <div className="p-5">
-                <p className="text-xs uppercase tracking-[0.18em] text-[var(--text-1)]">{product.badge}</p>
-                <h3 className="mt-2 text-xl font-semibold text-[var(--text-0)]">{product.name}</h3>
-                <p className="mt-2 text-sm text-[var(--text-1)]">{product.shortDescription}</p>
-              </div>
-            </Link>
+            <ProductCard key={product.slug} product={product} />
           ))}
         </div>
       </section>

@@ -34,6 +34,21 @@ body {
   overflow-x: hidden;
 }
 
+a,
+button,
+[role='button'],
+summary,
+select {
+  cursor: pointer;
+}
+
+button:disabled,
+select:disabled,
+input:disabled,
+textarea:disabled {
+  cursor: not-allowed;
+}
+
 body::before {
   content: '';
   pointer-events: none;

@@ -76,7 +76,7 @@ describe('cartReducer', () => {
     expect(merged.lines[0].quantity).toBe(3);
   });
 
-  it('normalizes quantity and avoids no-op drawer updates', () => {
+  it('removes lines for zero quantity and avoids no-op drawer updates', () => {
     const initial = createInitialCartState();
     const withLine = cartReducer(initial, {
       type: 'addLine',
@@ -96,7 +96,7 @@ describe('cartReducer', () => {
       payload: { lineId: 'qty-test', quantity: 0 },
     });
 
-    expect(normalized.lines[0].quantity).toBe(1);
+    expect(normalized.lines).toHaveLength(0);
 
     const closed = cartReducer(normalized, { type: 'closeDrawer' });
     expect(closed).toBe(normalized);

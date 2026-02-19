@@ -148,6 +148,13 @@ export function cartReducer(state: CartState, action: CartAction): CartState {
         lines: state.lines.filter((line) => line.lineId !== action.payload.lineId),
       });
     case 'updateQuantity':
+      if (action.payload.quantity <= 0) {
+        return withTimestamp({
+          ...state,
+          lines: state.lines.filter((line) => line.lineId !== action.payload.lineId),
+        });
+      }
+
       return withTimestamp({
         ...state,
         lines: state.lines.map((line) => {
