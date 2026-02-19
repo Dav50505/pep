@@ -13,7 +13,7 @@ interface ProductCardProps {
 }
 
 export default function ProductCard({ product }: ProductCardProps) {
-  const { addToCart } = useCart();
+  const { addToCart, canMutateCart } = useCart();
   const [quantity, setQuantity] = useState(1);
   const [cadence, setCadence] = useState<SubscriptionCadence>('4_weeks');
 
@@ -53,6 +53,7 @@ export default function ProductCard({ product }: ProductCardProps) {
           <button
             type="button"
             disabled={!product.inStock}
+            title={!canMutateCart ? 'Sign in required to add items to cart.' : undefined}
             onClick={() =>
               addToCart({
                 productSlug: product.slug,
@@ -65,7 +66,7 @@ export default function ProductCard({ product }: ProductCardProps) {
             }
             className="mt-5 w-full rounded-full bg-[var(--accent)] px-4 py-3 text-sm font-semibold text-[var(--bg-0)] transition hover:brightness-105 disabled:cursor-not-allowed disabled:opacity-40"
           >
-            {product.inStock ? 'Quick Add Subscription' : 'Out of Stock'}
+            {product.inStock ? (canMutateCart ? 'Quick Add Subscription' : 'Sign in to add') : 'Out of Stock'}
           </button>
         </div>
       </div>

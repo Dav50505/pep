@@ -15,7 +15,7 @@ interface ProductDetailClientProps {
 }
 
 export default function ProductDetailClient({ product }: ProductDetailClientProps) {
-  const { addToCart } = useCart();
+  const { addToCart, canMutateCart } = useCart();
   const [quantity, setQuantity] = useState(1);
   const [purchaseType, setPurchaseType] = useState<PurchaseType>('one_time');
   const [cadence, setCadence] = useState<SubscriptionCadence>('4_weeks');
@@ -75,6 +75,7 @@ export default function ProductDetailClient({ product }: ProductDetailClientProp
             <button
               type="button"
               disabled={!product.inStock}
+              title={!canMutateCart ? 'Sign in required to add items to cart.' : undefined}
               onClick={() =>
                 addToCart({
                   productSlug: product.slug,
@@ -87,7 +88,7 @@ export default function ProductDetailClient({ product }: ProductDetailClientProp
               }
               className="mt-5 w-full rounded-full bg-[var(--accent)] px-5 py-3 text-sm font-semibold text-[var(--bg-0)] transition hover:brightness-105 disabled:cursor-not-allowed disabled:opacity-50"
             >
-              {product.inStock ? 'Add to Cart' : 'Unavailable'}
+              {product.inStock ? (canMutateCart ? 'Add to Cart' : 'Sign in to add') : 'Unavailable'}
             </button>
           </div>
 

@@ -1,23 +1,21 @@
 import { render, screen, waitFor } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
-import { describe, expect, it, vi } from 'vitest';
-import { CART_STORAGE_KEY } from '@/components/cart/cartReducer';
+import { describe, expect, it } from 'vitest';
 import { CartProvider } from '@/components/cart/CartProvider';
 import CheckoutPage from '@/app/checkout/page';
-
-const pushMock = vi.fn();
-
-vi.mock('next/navigation', () => ({
-  usePathname: () => '/checkout',
-  useRouter: () => ({ push: pushMock }),
-}));
+import { getCartStorageKey } from '@/lib/cartStorage';
+import { routerPushMock, setAuthUser, setMockPathname } from '@/test/mocks';
 
 describe('checkout smoke flow', () => {
   it('walks shipping -> review -> payment and submits placeholder order', async () => {
     const user = userEvent.setup();
+    setAuthUser('user_checkout');
+    setMockPathname('/checkout');
+
+    const storageKey = getCartStorageKey('user_checkout');
 
     window.localStorage.setItem(
-      CART_STORAGE_KEY,
+      storageKey,
       JSON.stringify({
         lines: [
           {
@@ -66,10 +64,10 @@ describe('checkout smoke flow', () => {
 
     await user.click(screen.getByRole('button', { name: /Place Placeholder Order/i }));
 
-    expect(pushMock).toHaveBeenCalledWith('/checkout/success');
+    expect(routerPushMock).toHaveBeenCalledWith('/checkout/success');
 
     await waitFor(() => {
-      const parsed = JSON.parse(window.localStorage.getItem(CART_STORAGE_KEY) ?? '{}') as {
+      const parsed = JSON.parse(window.localStorage.getItem(storageKey) ?? '{}') as {
         lines?: unknown[];
       };
       expect(parsed.lines).toEqual([]);

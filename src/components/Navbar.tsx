@@ -1,6 +1,7 @@
 'use client';
 
 import Link from 'next/link';
+import { SignedIn, SignedOut, UserButton } from '@clerk/nextjs';
 import CartBadge from '@/components/cart/CartBadge';
 import { useCart } from '@/components/cart/CartProvider';
 import { formatVolume } from '@/lib/cartMath';
@@ -13,7 +14,7 @@ const links = [
 ];
 
 export default function Navbar() {
-  const { summary, toggleDrawer } = useCart();
+  const { summary, toggleDrawer, requireAuthForCartAction } = useCart();
 
   return (
     <nav className="fixed inset-x-0 top-0 z-50 border-b border-[var(--border-soft)] bg-[var(--bg-0)]/80 backdrop-blur-xl">
@@ -33,12 +34,58 @@ export default function Navbar() {
         <div className="flex items-center gap-3">
           <button
             type="button"
-            onClick={toggleDrawer}
+            onClick={() => {
+              if (!requireAuthForCartAction()) {
+                return;
+              }
+              toggleDrawer();
+            }}
             className="rounded-full border border-[var(--border-soft)] bg-[var(--surface)] px-4 py-2 text-sm text-[var(--text-0)] transition hover:border-[var(--accent-muted)]"
           >
             Cart · {formatVolume(summary.totalVolumeMl)}
           </button>
           <CartBadge />
+          <SignedOut>
+            <Link
+              href="/sign-in"
+              className="hidden rounded-full border border-[var(--border-soft)] bg-[var(--surface)] px-4 py-2 text-sm text-[var(--text-0)] md:inline-flex"
+            >
+              Sign in
+            </Link>
+            <Link
+              href="/sign-up"
+              className="hidden rounded-full bg-[var(--accent)] px-4 py-2 text-sm font-semibold text-[var(--bg-0)] md:inline-flex"
+            >
+              Sign up
+            </Link>
+          </SignedOut>
+          <SignedIn>
+            <UserButton
+              appearance={{
+                elements: {
+                  avatarBox: {
+                    width: '38px',
+                    height: '38px',
+                    border: '1px solid var(--border-soft)',
+                  },
+                  userButtonPopoverCard: {
+                    background: 'var(--surface)',
+                    border: '1px solid var(--border-soft)',
+                  },
+                  userButtonPopoverActionButton: {
+                    color: 'var(--text-0)',
+                  },
+                  userButtonPopoverActionButtonText: {
+                    color: 'var(--text-0)',
+                  },
+                  userButtonPopoverFooter: {
+                    borderTop: '1px solid var(--border-soft)',
+                  },
+                },
+              }}
+              afterSignOutUrl="/"
+            />
+          </SignedIn>
         </div>
       </div>
     </nav>

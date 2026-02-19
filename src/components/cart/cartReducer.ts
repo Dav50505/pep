@@ -4,8 +4,9 @@ import {
   PurchaseType,
   SubscriptionCadence,
 } from '@/lib/catalog';
+import { getCartStorageKey } from '@/lib/cartStorage';
 
-export const CART_STORAGE_KEY = 'pept_cart_v1';
+export const CART_STORAGE_KEY = getCartStorageKey(null);
 export const DEFAULT_CADENCE: SubscriptionCadence = '4_weeks';
 
 export interface AddToCartPayload {

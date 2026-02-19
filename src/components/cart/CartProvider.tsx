@@ -11,6 +11,8 @@ import {
   useReducer,
   useRef,
 } from 'react';
+import { usePathname, useRouter } from 'next/navigation';
+import { useAuth } from '@clerk/nextjs';
 import {
   CartLine,
   CartState,
@@ -22,9 +24,9 @@ import {
   AddToCartPayload,
   CartAction,
   cartReducer,
-  CART_STORAGE_KEY,
   createInitialCartState,
 } from '@/components/cart/cartReducer';
+import { getCartStorageKey } from '@/lib/cartStorage';
 
 type AddToCartInput = AddToCartPayload;
 
@@ -32,6 +34,8 @@ interface CartContextValue {
   state: CartState;
   summary: ReturnType<typeof computeCartSummary>;
   dispatch: Dispatch<CartAction>;
+  canMutateCart: boolean;
+  requireAuthForCartAction: () => boolean;
   addToCart: (input: AddToCartInput) => void;
   removeLine: (lineId: string) => void;
   setLineQuantity: (lineId: string, quantity: number) => void;
@@ -64,61 +68,96 @@ function isCartState(value: unknown): value is CartState {
 }
 
 export function CartProvider({ children }: { children: ReactNode }) {
+  const { userId } = useAuth();
+  const router = useRouter();
+  const pathname = usePathname();
   const [state, dispatch] = useReducer(cartReducer, undefined, createInitialCartState);
-  const hasHydratedRef = useRef(false);
+  const hydratedStorageKeyRef = useRef<string | null>(null);
+
+  const storageKey = useMemo(() => getCartStorageKey(userId ?? null), [userId]);
 
   useEffect(() => {
-    if (hasHydratedRef.current) {
+    if (hydratedStorageKeyRef.current === storageKey) {
       return;
     }
 
     try {
-      const storedValue = window.localStorage.getItem(CART_STORAGE_KEY);
+      const storedValue = window.localStorage.getItem(storageKey);
       if (!storedValue) {
-        hasHydratedRef.current = true;
+        dispatch({ type: 'hydrate', payload: createInitialCartState() });
         return;
       }
 
       const parsed = JSON.parse(storedValue);
       if (isCartState(parsed)) {
         dispatch({ type: 'hydrate', payload: parsed });
+        return;
       }
+
+      dispatch({ type: 'hydrate', payload: createInitialCartState() });
     } catch {
-      window.localStorage.removeItem(CART_STORAGE_KEY);
+      window.localStorage.removeItem(storageKey);
+      dispatch({ type: 'hydrate', payload: createInitialCartState() });
     } finally {
-      hasHydratedRef.current = true;
+      hydratedStorageKeyRef.current = storageKey;
     }
-  }, []);
+  }, [storageKey]);
 
   useEffect(() => {
-    if (!hasHydratedRef.current) {
+    if (hydratedStorageKeyRef.current !== storageKey) {
       return;
     }
 
-    window.localStorage.setItem(CART_STORAGE_KEY, JSON.stringify(state));
-  }, [state]);
+    window.localStorage.setItem(storageKey, JSON.stringify(state));
+  }, [state, storageKey]);
 
   const summary = useMemo(() => computeCartSummary(state.lines), [state.lines]);
+  const canMutateCart = Boolean(userId);
 
-  const addToCart = useCallback((input: AddToCartInput) => {
-    dispatch({ type: 'addLine', payload: input });
-    dispatch({ type: 'openDrawer' });
-  }, []);
+  const requireAuthForCartAction = useCallback(() => {
+    if (userId) {
+      return true;
+    }
+
+    const queryString = window.location.search.startsWith('?')
+      ? window.location.search.slice(1)
+      : window.location.search;
+    const redirectTarget = `${pathname}${queryString ? `?${queryString}` : ''}`;
+    router.push(`/sign-in?redirect_url=${encodeURIComponent(redirectTarget)}`);
+    return false;
+  }, [pathname, router, userId]);
+
+  const addToCart = useCallback(
+    (input: AddToCartInput) => {
+      if (!requireAuthForCartAction()) {
+        return;
+      }
+
+      dispatch({ type: 'addLine', payload: input });
+      dispatch({ type: 'openDrawer' });
+    },
+    [requireAuthForCartAction],
+  );
+
   const removeLine = useCallback((lineId: string) => {
     dispatch({ type: 'removeLine', payload: { lineId } });
   }, []);
+
   const setLineQuantity = useCallback((lineId: string, quantity: number) => {
     dispatch({ type: 'updateQuantity', payload: { lineId, quantity } });
   }, []);
+
   const setLinePurchaseType = useCallback(
     (lineId: string, purchaseType: PurchaseType, cadence?: SubscriptionCadence) => {
       dispatch({ type: 'updatePurchaseType', payload: { lineId, purchaseType, cadence } });
     },
     [],
   );
+
   const setLineCadence = useCallback((lineId: string, cadence: SubscriptionCadence) => {
     dispatch({ type: 'updateCadence', payload: { lineId, cadence } });
   }, []);
+
   const toggleDrawer = useCallback(() => dispatch({ type: 'toggleDrawer' }), []);
   const openDrawer = useCallback(() => dispatch({ type: 'openDrawer' }), []);
   const closeDrawer = useCallback(() => dispatch({ type: 'closeDrawer' }), []);
@@ -129,6 +168,8 @@ export function CartProvider({ children }: { children: ReactNode }) {
       state,
       summary,
       dispatch,
+      canMutateCart,
+      requireAuthForCartAction,
       addToCart,
       removeLine,
       setLineQuantity,
@@ -142,10 +183,12 @@ export function CartProvider({ children }: { children: ReactNode }) {
     };
   }, [
     addToCart,
+    canMutateCart,
     clearCart,
     closeDrawer,
     openDrawer,
     removeLine,
+    requireAuthForCartAction,
     setLineCadence,
     setLinePurchaseType,
     setLineQuantity,
