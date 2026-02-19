@@ -1,6 +1,7 @@
 'use client';
 
 import { useMemo, useState } from 'react';
+import RevealOnScroll from '@/components/animations/RevealOnScroll';
 import ProductCard from '@/components/product/ProductCard';
 import ProductFilters from '@/components/product/ProductFilters';
 import ComplianceNote from '@/components/product/ComplianceNote';
@@ -59,8 +60,10 @@ export default function CatalogPage() {
           </div>
 
           <div className="grid gap-5 sm:grid-cols-2 xl:grid-cols-3">
-            {filteredProducts.map((product) => (
-              <ProductCard key={product.slug} product={product} />
+            {filteredProducts.map((product, index) => (
+              <RevealOnScroll key={product.slug} className="h-full" delayMs={index * 70}>
+                <ProductCard product={product} />
+              </RevealOnScroll>
             ))}
           </div>
 

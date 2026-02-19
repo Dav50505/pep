@@ -6,6 +6,7 @@ import Navbar from '@/components/Navbar';
 import Footer from '@/components/Footer';
 import { CartProvider } from '@/components/cart/CartProvider';
 import CartDrawer from '@/components/cart/CartDrawer';
+import PageTransition from '@/components/animations/PageTransition';
 
 const uiSans = localFont({
   src: [
@@ -67,7 +68,7 @@ export default function RootLayout({
         <ClerkProvider>
           <CartProvider>
             <Navbar />
-            {children}
+            <PageTransition>{children}</PageTransition>
             <Footer />
             <CartDrawer />
           </CartProvider>

@@ -79,6 +79,57 @@ main {
   backdrop-filter: blur(10px);
 }
 
+.reveal-on-scroll {
+  opacity: 0;
+  transform: translateY(16px);
+  transition:
+    opacity 420ms ease-out,
+    transform 420ms ease-out;
+  will-change: opacity, transform;
+}
+
+.reveal-on-scroll.is-visible {
+  opacity: 1;
+  transform: translateY(0);
+}
+
+.page-transition {
+  opacity: 1;
+}
+
+.page-transition--route {
+  animation: page-enter 620ms ease-out both;
+}
+
+.page-transition--home {
+  animation: none;
+}
+
+@keyframes page-enter {
+  from {
+    opacity: 0;
+    transform: translateY(20px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .reveal-on-scroll {
+    opacity: 1 !important;
+    transform: none !important;
+    transition: none !important;
+  }
+
+  .page-transition--route {
+    animation: none !important;
+    opacity: 1 !important;
+    transform: none !important;
+  }
+}
+
 @layer utilities {
   .text-balance {
     text-wrap: balance;

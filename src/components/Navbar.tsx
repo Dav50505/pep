@@ -68,23 +68,14 @@ export default function Navbar() {
                     height: '38px',
                     border: '1px solid var(--border-soft)',
                   },
-                  userButtonPopoverCard: {
-                    background: 'var(--surface)',
-                    border: '1px solid var(--border-soft)',
-                  },
-                  userButtonPopoverActionButton: {
-                    color: 'var(--text-0)',
-                  },
-                  userButtonPopoverActionButtonText: {
-                    color: 'var(--text-0)',
-                  },
-                  userButtonPopoverFooter: {
-                    borderTop: '1px solid var(--border-soft)',
-                  },
                 },
               }}
               afterSignOutUrl="/"
-            />
+            >
+              <UserButton.MenuItems>
+                <UserButton.Action label="signOut" />
+              </UserButton.MenuItems>
+            </UserButton>
           </SignedIn>
         </div>
       </div>
